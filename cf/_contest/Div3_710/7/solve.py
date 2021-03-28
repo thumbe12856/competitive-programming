@@ -1,25 +1,21 @@
-from collections import Counter, defaultdict
-
+from collections import Counter
+ 
 def solve(S):
-    q = []
-    vis = {}
+    cs = Counter(S)
+    stack = []
+    vis = set()
     for i in range(len(S)):
         if S[i] not in vis:
-            vis[S[i]] = len(q)
-            q.append(S[i])
-        else:
-            idx = vis[S[i]]
-            ori_idx = idx
+            while stack and \
+                stack[-1] < S[i] and \
+                cs[stack[-1]] > 0:
+                vis.discard(stack.pop())
+    
+            vis.add(S[i])
+            stack.append(S[i])
+        cs[S[i]] -= 1
 
-            while idx + 1 < len(q) and q[idx + 1] == "":
-                idx += 1
-
-            if idx + 1 < len(q) and q[idx + 1] >= S[i]:
-                q[ori_idx] = ""
-                vis[S[i]] = len(q)
-                q.append(S[i])
-
-    return ("").join(q)
+    return ("").join(stack)
 
 T = int(input())
 for _ in range(T):
