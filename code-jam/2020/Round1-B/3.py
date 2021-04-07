@@ -1,63 +1,69 @@
-N = int(input(""))
+def check(cards, idx):
+    last_r = -1
+    for i in idx:
+        r, _ = cards[i]
+        if r < last_r:
+            return False
+        last_r = r
+    return True
 
-def is_valid(cards):
-	for i in range(1, len(cards)):
-		if cards[i][0] - cards[i - 1][0] == 1 or cards[i][0] == cards[i - 1][0]:
-			continue
-		else:
-			return False
+def trans(cards, idx):
+    ret = []
+    for i in idx:
+        r, _ = cards[i]
+        ret.append(r)
+    return tuple(ret)
 
-	return True
+def solve(R, S):
+    if R == 1 or S == 1:
+        return []
 
+    move = []
+    cards = []
+    for i in range(S):
+        for j in range(R):
+            cards.append((j + 1, i + 1))
 
-def traversal(cards, path, visited):
-	if is_valid(cards):
-		return True, path
+    idx = list(range(len(cards)))
+    q = [[idx, []]]
+    vis = set()
+    vis.add(trans(cards, idx))
+    while q:
+        next_q = []
+        for curr_idx, curr_moves in q:
+            last_idx = len(idx)
+            for i in range(len(idx) - 1, -1, -1):
+                r, _ = cards[curr_idx[i]]
+                if r * S >= i >= (r - 1) * S:
+                    last_idx = i
+                    continue
+                else:
+                    break
 
-	for i in range(1, len(cards)):
-		for j in range(1, len(cards)):
-			if i + j > len(cards):
-				continue
-				
-			next_card = cards[i:i + j] + cards[:i] + cards[i + j:]
-			t_next_card = to_tuple(next_card)
+            for i in range(1, last_idx + 1, 1):
+                for j in range(i, last_idx + 1, 1):
+                    next_idx = curr_idx[i: j + 1] + curr_idx[:i] + curr_idx[j + 1:]
+                    tn = trans(cards, next_idx)
+                    if tn in vis:
+                        continue
 
-			if t_next_card in visited:
-				continue
+                    next_moves = curr_moves + [(i, j - i + 1)]
+                    if check(cards, next_idx):
+                        return next_moves
 
-			visited.add(t_next_card)
-			path.append([i, j])
-			
-			ret, temp_path = traversal(next_card, path, visited)
-			if ret:
-				return True, temp_path
+                    vis.add(tn)
+                    next_q.append([
+                        next_idx, next_moves
+                    ])
 
-			path.pop()
-			visited.remove(t_next_card)
+        q = next_q
 
-	return False, path
+    return move
 
-def to_tuple(cards):
-	ret = []
-	for x, y in cards:
-		ret.append(x)
-		ret.append(y)
-
-	return tuple(ret)
-
-
-for _ in range(N):
-	ans = 0
-	R, S = list(map(int, input("").split()))
-	cards = []
-	for i in range(S):
-		for j in range(R):
-			cards.append((j + 1, i + 1))
-
-	visited = set()
-	visited.add(to_tuple(cards))
-	ret, ans = traversal(cards, [], visited)
-
-	print("Case #{0}: {1}".format(_ + 1, len(ans)))
-	for a, b in ans:
-		print("{0} {1}".format(a, b))
+T = int(input())
+for case_num in range(T):
+    R, S = map(int, input().split())
+    move = solve(R, S)
+    print("Case #{}: {}".format(case_num + 1, len(move)))
+    for x, y in move:
+        print(x, y)
