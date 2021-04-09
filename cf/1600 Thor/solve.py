@@ -19,7 +19,7 @@ for _ in range(Q):
 
     elif t == 2:
         while vis[x]:
-            # All element in vis[x] should be popped out from q, and It will do it later.
+            # All element in vis[x] should be popped out from q, and will do it later.
             # The index are collected in the not_valid set.
             i = vis[x].pop()
             not_valid.add(i)
