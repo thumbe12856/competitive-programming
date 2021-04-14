@@ -17,7 +17,6 @@ def solve(P, Q):
         p = P
         while p % Q == 0:
             p //= c
-
         ans = max(ans, p)
 
     return ans
