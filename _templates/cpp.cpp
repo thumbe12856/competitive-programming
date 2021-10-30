@@ -15,6 +15,7 @@ std::set<int> vis;
 std::set<int> can;
 vector<vector<int>> G(200001);
 vector<vector<std::pair<int, int>>> q(200001);
+vector<pair<int, int>> dirs;
 int N, Q, f, t, x, y;
 
 void solve() {
@@ -23,6 +24,12 @@ void solve() {
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);cout.tie(0);
+    dirs.push_back(make_pair(0, 1));
+    dirs.push_back(make_pair(1, 0));
+    dirs.push_back(make_pair(0, -1));
+    dirs.push_back(make_pair(-1, 0));
+
+
 
     cin >> T;
     for(int i = 0; i < T; i ++) {
